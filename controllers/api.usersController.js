@@ -1,5 +1,6 @@
 const Users = require("../model/users.model");
-
+var jwt = require("jsonwebtoken");
+var bcrypt = require("bcryptjs");
 
 module.exports.index = async (req, res) => {
   //console.log('abc')
@@ -15,32 +16,41 @@ module.exports.postLogin = async (req, res) => {
     let errs=[]
     if (!user){
         errs.push('User does not exist')
-        res.status(404).json(errs)
+        res.status(401).json(errs)
         return
     }
+    // var passwordIsValid = bcrypt.compareSync(
+    //   req.body.password,
+    //   user.password
+    // ); check pass
     if (user.pass!==pass){
         errs.push('Wrong password!')
         res.status(401).json(errs)
         return
     }
-
+    var token = jwt.sign({ id: user.id }, process.env.AUTH_KEY, {
+      expiresIn: 86400 // 24 hours
+    });
+    
 //    res.cookie('userID',user.id,{ signed: true })
   //  res.redirect('/')
-  res.json(user);
+  res.json({user,accessToken: token});
 };
 
 module.exports.register = async (req, res) => {
   let users = await Users.find({ name: req.body.name });
+  
   if (users.length) {
     res.json("User does exist");
   } else {
     //console.log(users)
+    // password: bcrypt.hashSync(req.body.password, 8) tạo pass
+ 
     await Users.create(req.body);
+   
     res.json("Welcome");
   }
-  // let user= new Users(req.body)
 
-  //user.save().then(()=>{})
 };
 
 module.exports.viewUser= async (req,res)=>{

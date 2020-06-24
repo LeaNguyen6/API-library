@@ -6,9 +6,8 @@ const transactionController=require('../controllers/api.transactionsController')
 const sessionController=require('../controllers/api.sessionController')
 
 //========Users==========
-router.get('/user',usersController.index)
-router.post('/login', usersController.postLogin)
-router.post('/register', usersController.register)
+
+
 router.get('/user/:id',usersController.viewUser)
 router.put('/user/:id',usersController.updateUser)
 router.delete('/user/:id',usersController.deleteUser)

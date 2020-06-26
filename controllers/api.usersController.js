@@ -38,10 +38,10 @@ module.exports.postLogin = async (req, res) => {
 };
 
 module.exports.register = async (req, res) => {
-  let users = await Users.find({ name: req.body.name });
+  let users = await Users.find({ email: req.body.email });
   
   if (users.length) {
-    res.json("User does exist");
+    res.status(500).send("User does exist");
   } else {
     //console.log(users)
     // password: bcrypt.hashSync(req.body.password, 8) tạo pass
